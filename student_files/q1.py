@@ -21,8 +21,11 @@ df.printSchema()
 cleaned_df = df.filter(
     (col("Reviews") != "null") &
     (col("Reviews").isNotNull()) &
+    (col("Reviews") != "[ [  ], [  ] ]") &
     (col("Rating").cast("float") >= 3.0 )
 )
+
+cleaned_df
 
 # Write into the target path
 output_path = f"{base_path}/output/question1/"
