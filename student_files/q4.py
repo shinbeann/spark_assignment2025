@@ -24,8 +24,6 @@ df_cleaned = df_filtered.withColumn(
 
 # Explode the Cuisine list to get one row per cuisine
 df_exploded = df_cleaned.select("City", explode(col("Cuisine")).alias("Cuisine"))
-
-# Trim
 df_exploded = df_exploded.withColumn("Cuisine", trim(col("Cuisine")))
 
 # Group by City and Cuisine and count
