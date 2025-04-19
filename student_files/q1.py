@@ -1,6 +1,6 @@
 import sys
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, length, regexp_replace
+from pyspark.sql.functions import col
 
 # you may add more import if you need to
 import os
@@ -21,10 +21,7 @@ print("Original row count:", df.count())
 # Filter rows with no reviews or ratings < 3.0
 # From df.printSchema():  Rating is casted to String -> Type casting to float must be done
 cleaned_df = df.filter(
-    (col("Reviews").isNotNull())
-    & (col("Reviews") != "")
-    & (col("Number of Reviews").isNotNull())
-    & (col("Rating").cast("float") >= 3.0)
+    (col("Number of Reviews").isNotNull()) & (col("Rating").cast("float") >= 3.0)
 )
 
 print("Row count after filtering:", cleaned_df.count())
