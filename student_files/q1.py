@@ -23,7 +23,7 @@ print("Original row count:", df.count())
 cleaned_df = df.filter(
     (col("Reviews").isNotNull())
     & (col("Reviews") != "")
-    & (length(regexp_replace(col("Reviews"), r"[\[\],\s]", "")) > 0)
+    & (col("Number of Reviews").isNotNull())
     & (col("Rating").cast("float") >= 3.0)
 )
 
