@@ -3,15 +3,16 @@ from pyspark.sql import SparkSession
 
 # you may add more import if you need to
 from pyspark.sql.functions import col, explode, regexp_replace, trim, split
-import os
 
 # don't change this line
 hdfs_nn = sys.argv[1]
 
 spark = SparkSession.builder.appName("Assigment 2 Question 4").getOrCreate()
 # YOUR CODE GOES BELOW
-base_path = os.getcwd()
-input_path = f"{base_path}/data/TA_restaurants_curated_cleaned.csv"
+
+input_path = (
+    f"hdfs://{hdfs_nn}:9000/assignment2/part1/input/TA_restaurants_curated_cleaned.csv"
+)
 df = spark.read.option("header", True).csv(input_path)
 
 # Drop null City or Cuisine Style
@@ -30,7 +31,7 @@ df_exploded = df_exploded.withColumn("Cuisine", trim(col("Cuisine")))
 result = df_exploded.groupBy("City", "Cuisine").count()
 
 # Write into the target path
-output_path = f"{base_path}/output/question4/"
+output_path = f"hdfs://{hdfs_nn}:9000/assignment2/output/question4/"
 result.write.mode("overwrite").option("header", True).csv(output_path)
 
 spark.stop()

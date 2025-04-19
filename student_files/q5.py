@@ -6,7 +6,6 @@ from pyspark.sql.functions import col, explode, from_json, count, collect_list, 
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 from pyspark.sql.types import ArrayType
 from pyspark.sql import functions as F
-import os
 
 # don't change this line
 hdfs_nn = sys.argv[1]
@@ -31,8 +30,7 @@ cast_schema = ArrayType(
 )
 
 # Load the data from Parquet file
-base_path = os.getcwd()
-input_path = f"{base_path}/data/tmdb_5000_credits.parquet"
+input_path = f"hdfs://{hdfs_nn}:9000/assignment2/part2/input/tmdb_5000_credits.parquet"
 df = spark.read.parquet(input_path)
 
 # Parse the cast JSON and explode to get individual actors
@@ -80,8 +78,7 @@ result = frequent_collaborators.select(
 )
 
 # Define the output path
-# output_path = f"hdfs://{hdfs_nn}:9000/assignment2/output/question5/"
-output_path = f"{base_path}/output/question5/"
+output_path = f"hdfs://{hdfs_nn}:9000/assignment2/output/question5/"
 
 # Write the result to Parquet format
 result.write.mode("overwrite").parquet(output_path)

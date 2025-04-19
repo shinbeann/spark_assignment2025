@@ -4,7 +4,6 @@ from pyspark.sql import SparkSession
 # you may add more import if you need to
 from pyspark.sql.functions import col, desc, asc, rank
 from pyspark.sql.window import Window
-import os
 
 # don't change this line
 hdfs_nn = sys.argv[1]
@@ -12,8 +11,9 @@ hdfs_nn = sys.argv[1]
 spark = SparkSession.builder.appName("Assigment 2 Question 2").getOrCreate()
 # YOUR CODE GOES BELOW
 
-base_path = os.getcwd()
-input_path = f"{base_path}/data/TA_restaurants_curated_cleaned.csv"
+input_path = (
+    f"hdfs://{hdfs_nn}:9000/assignment2/part1/input/TA_restaurants_curated_cleaned.csv"
+)
 df = spark.read.option("header", True).csv(input_path)
 
 # Filter and prepare data
@@ -37,13 +37,12 @@ worst = (
 
 # Combine and write
 result = best.union(worst)
-output_path = f"{base_path}/output/question2/"
+output_path = f"hdfs://{hdfs_nn}:9000/assignment2/output/question2/"
 result.write.mode("overwrite").option("header", True).csv(output_path)
 print("Row count after filtering:", result.count())
 
-
 # check ans
-single_csv_path = f"{output_path}/q2_output.csv"
-result.coalesce(1).write.mode("overwrite").option("header", True).csv(single_csv_path)
+# single_csv_path = f"{output_path}/q2_output.csv"
+# result.coalesce(1).write.mode("overwrite").option("header", True).csv(single_csv_path)
 
 spark.stop()

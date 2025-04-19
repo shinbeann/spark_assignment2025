@@ -2,7 +2,6 @@ import sys
 from pyspark.sql import SparkSession
 
 # you may add more import if you need to
-import os
 from pyspark.sql.functions import col, avg, rank, when
 from pyspark.sql.window import Window
 
@@ -11,8 +10,10 @@ hdfs_nn = sys.argv[1]
 
 spark = SparkSession.builder.appName("Assigment 2 Question 3").getOrCreate()
 # YOUR CODE GOES BELOW
-base_path = os.getcwd()
-input_path = f"{base_path}/data/TA_restaurants_curated_cleaned.csv"
+
+input_path = (
+    f"hdfs://{hdfs_nn}:9000/assignment2/part1/input/TA_restaurants_curated_cleaned.csv"
+)
 df = spark.read.option("header", True).csv(input_path)
 
 # Filter and prepare data
@@ -45,7 +46,7 @@ result = result.orderBy(["RatingGroup", "AverageRating"], ascending=[False, Fals
 print("Row count after filtering:", result.count())
 
 # Write into the target path
-output_path = f"{base_path}/output/question3/"
+output_path = f"hdfs://{hdfs_nn}:9000/assignment2/output/question3/"
 result.write.mode("overwrite").option("header", True).csv(output_path)
 
 spark.stop()
